@@ -2,17 +2,69 @@
 	font-weight: normal;
 	font-style: normal;
 	font-family: 'glyphicons';
-	src:url('../fonts/glyphicons-halflings-regular.eot');
-	src:url('../fonts/glyphicons-halflings-regular.eot') format('embedded-opentype'),
-		url('../fonts/glyphicons-halflings-regular.woff') format('woff'),
-		url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'),
-		url('../fonts/glyphicons-halflings-regular.svg') format('svg');
+	src: url('../fonts/glyphicons-halflings-regular.woff') format('woff');
 }
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Bold-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-BoldItalic-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Light-webfont.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-LightItalic-webfont.woff') format('woff');
+    font-weight: 100;
+    font-style: italic;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Medium-webfont.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+ 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-MediumItalic-webfont.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+
 html{height: 100%}
 body {
   padding-top: 50px;
   color: #222;
-  font-family: 'Oxygen', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 16px;
   height: 100%
 }
