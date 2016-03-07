@@ -9,6 +9,8 @@ $(document).ready(function()
 	//if not logged in, redirect to index.html
 	if(!$.session.get('userid') && current_path !== 'index.html' )
 		window.location.replace('index.html');
+	else if($.session.get('userid') && current_path === 'index.html' )
+		window.location.replace('menu.html');
 	
 	$('#form-signin').submit(function()
 	{
@@ -22,15 +24,16 @@ $(document).ready(function()
 		
 		$.getJSON('users.json', function(result) 
 		{
+			result = result.users;
+			//alert(result);
 			for (var key in result)
 			{
 				if (result.hasOwnProperty(key))
 				{
-					// here you have access to
 					var USERID = result[key].userid;
 					var USERNAME = result[key].username;
 					var PASSWORD = result[key].password;
-
+					
 					if(USERNAME === username && PASSWORD === password_md5)
 					{
 						found = true;
@@ -40,30 +43,29 @@ $(document).ready(function()
 					}
 				}
 			}
+			
+			if(found)
+				window.location.replace('menu.html');
+			else
+			{
+				$.notify({
+					title: '<strong>Invalid Login!</strong>',
+					message: 'The username-password provided by you is incorrect.'
+				},{
+					type: 'danger',
+					placement: {
+						from: 'top',
+						align: 'center'
+					},
+					delay:3000
+				});
+
+				$('input[name=username]').val('');
+				$('input[name=password]').val('');
+
+				$('input[name=username]').focus();
+			}
 		});
-		
-		if(found)
-			window.location.replace('menu.html');
-		else
-		{
-			$.notify({
-				title: '<strong>Invalid Login!</strong>',
-				message: 'The username-password provided by you is incorrect.'
-			},{
-				type: 'danger',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:300000
-			});
-			
-			$('input[name=username]').val('');
-			$('input[name=password]').val('');
-			
-			$('input[name=username]').focus();
-		}
-		
 		
 		return false;
 	});
