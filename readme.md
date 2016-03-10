@@ -1,3 +1,5 @@
+http://brownscourt.com/about/
+
 1. js cookie - sessions:
 http://stackoverflow.com/questions/2257631/how-create-a-session-using-javascript
 
@@ -22,4 +24,4 @@ https://www.smashingmagazine.com/2014/02/create-client-side-shopping-cart/
 
 http://isotope.metafizzy.co/filtering.html
 
-pics: 250 x 250
+pics: 250 x 250    250 x 156
