@@ -20,9 +20,70 @@ function hideLoader()
 }
 
 
+function loadMenu()
+{
+    var categories = [];
+    $.getJSON('menu.json', function(result) 
+    {
+        result = result.menu;
+        
+        var ITEMID = '', ITEM = '', CATEGORY = '', PRICE = '', html = '';
+        
+        for(var key in result)
+        {
+            if(result.hasOwnProperty(key))
+            {
+                ITEMID = ''; ITEM = ''; CATEGORY = ''; PRICE = ''; html = '';
+                
+                ITEMID = result[key].itemId;
+                ITEM = result[key].item;
+                CATEGORY = result[key].category;
+                PRICE = result[key].pricePerItem;
+                
+                //replacing space and converting to lowercase
+                CATEGORY = CATEGORY.replace(/\s+/g, '-').toLowerCase();
+                
+                if( $.inArray(CATEGORY, categories) < 0 )
+                    categories.push(CATEGORY);
+
+                html =  
+                 '<figure class="product-figure ' + CATEGORY + '">'
+                +'    <img src="img/menu/id_' + ITEMID + '.jpg" class="img-responsive" alt="img-' + ITEMID + '">'
+                +'     <div class="product-detail">'
+                +'        <h3>' + ITEM + '</h3>'
+                +'         <h3>&#x20B9; ' + PRICE + '</h3>'
+                +'     </div>'
+                +'     <div class="row">'
+                +'         <div class="col-xs-6">'
+                +'             <a class="btn add-to-cart" data-item_id="' + ITEMID + '">Add to cart</a>'
+                +'         </div>'
+                +'         <div class="col-xs-6">'
+                +'             <div class="btn-group" role="group">'
+                +'                 <button class="btn btn-qty btn-minus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-minus"></i> </button>'
+                +'                 <button class="btn btn-qty btn-disp" type="button" data-item_id="' + ITEMID + '"> 1 </button>'
+                +'                 <input type="hidden" name="qty" class="form-control" value="1" data-item_id="' + ITEMID + '">'
+                +'                 <input type="hidden" name="price" class="form-control" value="' + PRICE + '" data-item_id="' + ITEMID + '">'
+                +'                 <button class="btn btn-qty btn-plus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-plus"></i> </button>'
+                +'             </div>'
+                +'         </div>'
+                +'     </div>'
+                +' </figure>';
+        
+                $('div#grid').append(html);
+            }
+        }
+
+        
+    });
+}
+
+var current_path = window.location.pathname.split('/').pop();
+
+
+
+
 $(document).ready(function()
 {
-	var current_path = window.location.pathname.split('/').pop();
 	//if not logged in, redirect to index.html
 	if(!$.session.get('userid') && current_path !== 'index.html' )
 		window.location.replace('index.html');
@@ -64,15 +125,14 @@ $(document).ready(function()
 			{
 				if (result.hasOwnProperty(key))
 				{
-					var USERID = result[key].userid;
-					var USERNAME = result[key].username;
-					var PASSWORD = result[key].password;
-					
-					if(USERNAME === username && PASSWORD === password_md5)
+					if(
+                        result[key].username === username 
+                        && result[key].password === password_md5
+                    )
 					{
 						found = true;
-						$.session.set('userid', USERID);
-						$.session.set('username', USERNAME);
+						$.session.set('userid', result[key].userid);
+						$.session.set('username', result[key].username);
 						break;
 					}
 				}
@@ -104,7 +164,11 @@ $(document).ready(function()
 		return false;
 	});
 	
-	
+    
+/*----------------------------------- display menu ------------------------------ */    
+    if(current_path === 'menu.html') 
+        loadMenu();
+    
 /*----------------------------------- SEARCH ------------------------------ */
 	$('#search-input').keyup(function()
 	{
@@ -120,9 +184,46 @@ $(document).ready(function()
 		return false;
 	});
 	
+    
+
 	
+
+/*----------------------------------- CHANGE QUANTITY ------------------------------ */
 	
-	
+    $('body').on('click', 'button.btn-minus', function()
+	{
+        var item_id = $(this).data('item_id');
+        var input = $('input[name=qty][data-item_id='+item_id+']');
+        var disp = $('button.btn-disp[data-item_id='+item_id+']');
+        var qty = input.val();
+        
+        qty--;
+        
+        if(qty < 1) qty = 1;
+        
+        input.val(qty);
+        disp.html(qty);
+		
+		return false;
+	});
+    
+    $('body').on('click', 'button.btn-plus', function()
+	{
+        var item_id = $(this).data('item_id');
+        var input = $('input[name=qty][data-item_id='+item_id+']');
+        var disp = $('button.btn-disp[data-item_id='+item_id+']');
+        var qty = input.val();
+        
+        qty++;
+        
+        if(qty > 10) qty = 10;
+        
+        input.val(qty);
+        disp.html(qty);
+		
+		return false;
+	});
+    
 	//cart structure:
 	/**
 	 * CART STRUCTURE:
@@ -136,7 +237,48 @@ $(document).ready(function()
 /*----------------------------------- CHECK-OUT ------------------------------ */
 	
 	
-
-	
 });
+	
+
+    $( function() 
+    {
+        // quick search regex
+        var qsRegex;
+
+        // init Isotope
+        var $grid = $('#grid').isotope(
+        {
+            itemSelector: '.product-figure',
+            layoutMode: 'fitRows',
+            filter: function() {
+                return qsRegex ? $(this).text().match( qsRegex ) : true;
+            }
+        });
+
+        // use value of search field to filter
+        var $quicksearch = $('#search-input').keyup( debounce( function() 
+        {
+            qsRegex = new RegExp( $quicksearch.val(), 'gi' );
+            $grid.isotope();
+        }, 200 ) );
+
+    });
+
+    // debounce so filtering doesn't happen every millisecond
+    function debounce( fn, threshold ) 
+    {
+        var timeout;
+        return function debounced() 
+        {
+            if ( timeout ) {
+                clearTimeout( timeout );
+            }
+            function delayed() {
+                fn();
+                timeout = null;
+            }
+            
+            timeout = setTimeout( delayed, threshold || 100 );
+        }
+    }
 
