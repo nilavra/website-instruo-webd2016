@@ -352,6 +352,8 @@ span.badge#num_items { background-color: #D49637;}
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(193, 181, 157, 0.9);
 }
 
+#cat-select { z-index: 9999;}
+
 /* #Search Results
 ================================================== */
 .product-figure { 
@@ -370,16 +372,18 @@ span.badge#num_items { background-color: #D49637;}
     }
 }
 
-.btn.add-to-cart, .btn-qty{
+.btn.add-to-cart, .btn-qty, .btn-cat-filter
+{
     background-color: rgba(0,0,0,0); 
     border: 2px solid #c1b59d;
     color: #a3916d;
     text-transform: uppercase;
     font-weight: 700;
     padding: 6px 9px;
+	cursor: pointer;
 }
 
-.btn.add-to-cart:hover, .btn-qty:hover{
+.btn.add-to-cart:hover, .btn-qty:hover, .btn-cat-filter:hover, .btn-cat-filter.active{
     background-color: #827252;
     border: 2px solid #827252;
     color: #f6f5f1;

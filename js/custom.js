@@ -23,11 +23,12 @@ function hideLoader()
 function loadMenu()
 {
     var categories = [];
+	var category_desc = [];
     $.getJSON('menu.json', function(result) 
     {
         result = result.menu;
         
-        var ITEMID = '', ITEM = '', CATEGORY = '', PRICE = '', html = '';
+        var ITEMID = '', ITEM = '', CATEGORY = '', CATEGORY_DESC = '', PRICE = '', html = '';
         
         for(var key in result)
         {
@@ -37,17 +38,21 @@ function loadMenu()
                 
                 ITEMID = result[key].itemId;
                 ITEM = result[key].item;
-                CATEGORY = result[key].category;
+                CATEGORY_DESC = result[key].category;
                 PRICE = result[key].pricePerItem;
                 
                 //replacing space and converting to lowercase
-                CATEGORY = CATEGORY.replace(/\s+/g, '-').toLowerCase();
+                CATEGORY = CATEGORY_DESC.replace(/\s+/g, '-').toLowerCase();
                 
                 if( $.inArray(CATEGORY, categories) < 0 )
-                    categories.push(CATEGORY);
+				{
+					categories.push(CATEGORY);
+					category_desc.push(CATEGORY_DESC);
+				}
+                    
 
                 html =  
-                 '<figure class="product-figure ' + CATEGORY + '">'
+                 '<figure class="product-figure" data-name="' + ITEM + '" data-category="' + CATEGORY + '">'
                 +'    <img src="img/menu/id_' + ITEMID + '.jpg" class="img-responsive" alt="img-' + ITEMID + '">'
                 +'     <div class="product-detail">'
                 +'        <h3>' + ITEM + '</h3>'
@@ -72,18 +77,33 @@ function loadMenu()
                 $('div#grid').append(html);
             }
         }
+		
+		for(var i = 0; i < categories.length; i++)
+        {
+			CATEGORY = categories[i];
+			CATEGORY_DESC = category_desc[i];
+			
+			html =  
+			 '<label class="btn btn-cat-filter">'
+			+'       <input type="radio" name="cat-filter" data-category="' + CATEGORY + '"> ' + CATEGORY_DESC
+			+'</label>';
+
+			$('div#cat-select').append(html);
+			
+        }
 
         
     });
 }
 
-var current_path = window.location.pathname.split('/').pop();
+
 
 
 
 
 $(document).ready(function()
 {
+	var current_path = window.location.pathname.split('/').pop();
 	//if not logged in, redirect to index.html
 	if(!$.session.get('userid') && current_path !== 'index.html' )
 		window.location.replace('index.html');
@@ -170,20 +190,58 @@ $(document).ready(function()
         loadMenu();
     
 /*----------------------------------- SEARCH ------------------------------ */
+	var cat_filter = '%', search_key = '';
+	
 	$('#search-input').keyup(function()
 	{
-		if($(this).val().length > 0)
+		search_key = $(this).val().toLowerCase();
+		if(search_key.length > 0)
+		{
 			$('a#search-clear').removeClass('hidden');
+			$('.product-figure').filter( function(index)
+			{
+				var found = 
+				$(this).data('name').toLowerCase().indexOf(search_key) === 0 //|| $(this).data('category').toLowerCase().indexOf(search_key) >= 0
+					;
+				return !found;
+			}).hide('slow');
+		}
+		else
+		{
+			if(cat_filter === '%')
+				$('.product-figure').show('slow');
+			else
+				$('.product-figure[data-category=' + cat_filter + ']').show('slow');
+		}
 	});
+	
 	
 	$('a#search-clear').click(function()
 	{
+		if(cat_filter === '%')
+			$('.product-figure').show('slow');
+		else
+			$('.product-figure[data-category=' + cat_filter + ']').show('slow');
+		
 		$('#search-input').val('');
 		$(this).addClass('hidden');
 		$('#search-input').focus();
+		
 		return false;
 	});
 	
+	
+	$('body').on('change', 'input[name=cat-filter]', function()
+	{
+		$('.product-figure').show();
+        
+		cat_filter = $(this).data('category');
+        
+		if(cat_filter !== '%')
+			$('.product-figure[data-category!=' + cat_filter + ']').hide();
+		
+		return false;
+	});
     
 
 	
@@ -238,47 +296,4 @@ $(document).ready(function()
 	
 	
 });
-	
-
-    $( function() 
-    {
-        // quick search regex
-        var qsRegex;
-
-        // init Isotope
-        var $grid = $('#grid').isotope(
-        {
-            itemSelector: '.product-figure',
-            layoutMode: 'fitRows',
-            filter: function() {
-                return qsRegex ? $(this).text().match( qsRegex ) : true;
-            }
-        });
-
-        // use value of search field to filter
-        var $quicksearch = $('#search-input').keyup( debounce( function() 
-        {
-            qsRegex = new RegExp( $quicksearch.val(), 'gi' );
-            $grid.isotope();
-        }, 200 ) );
-
-    });
-
-    // debounce so filtering doesn't happen every millisecond
-    function debounce( fn, threshold ) 
-    {
-        var timeout;
-        return function debounced() 
-        {
-            if ( timeout ) {
-                clearTimeout( timeout );
-            }
-            function delayed() {
-                fn();
-                timeout = null;
-            }
-            
-            timeout = setTimeout( delayed, threshold || 100 );
-        }
-    }
 
