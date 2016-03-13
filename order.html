@@ -9,7 +9,7 @@
 	<meta name="author" content="">
 	<link rel="icon" href="favicon.ico">
 
-	<title>Place Your Order | Tata Research Canteen | IIEST Shibpur</title>
+	<title>Confirm Your Order | Tata Research Canteen | IIEST Shibpur</title>
 	
 	<link href="./css/bootstrap.3.3.6.min.css" rel="stylesheet">
 	<link href="./css/font-awesome.4.5.0.min.css" rel="stylesheet">
@@ -76,6 +76,7 @@
 		<br/>
         <!-- session info -->
 		<hr/>
+		
 		<div class="row session-info">
 			<div class="col-xs-6" style="text-align: left">
 				<span id="username"></span>
@@ -89,104 +90,108 @@
 				
 			</div>
 		</div>
+		
 		<hr/>
 		
-		<!-- search bar -->
-		
-		<br/>
-		
 		<div class="row">
-			<div class="col-lg-12">
-				<div id="cat-select" class="btn-group" data-toggle="buttons">
-					<label class="btn btn-cat-filter active">
-						<input type="radio" name="cat-filter" data-category="%" checked> All
-					</label>
-				</div>
+			<div class="col-xs-12" style="text-align: center;">
+				<h1 style="margin-top: 10px; margin-bottom: 20px;">Order Details</h1>
 			</div>
 		</div>
 		
+<!--********************************************** order info ************************************-->
+
 		
-		<div class="row">
-			<div class="col-lg-12">
-				<section id="search">
-					<label for="search-input"><i class="fa fa-search"></i></label>
-					<input type="text" id="search-input" class="form-control input-lg" placeholder="Indulge yourself" autocomplete="off" autofocus>
-					<a id="search-clear" href="#" class="fa fa-times-circle hidden"></a>
-				</section>
-			</div>
-		</div>
-		
-		<br/>
-		
-		<!-- search results -->
-		
-		
+
         <div class="row">
-            <div class="col-xs-12">
-                <div id="grid"></div>
+            <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+                <table class="table table-bordered order-details">
+					<thead>
+						<tr>
+							<!--th class="sl-no">Sl.</th-->
+							<th class="item">Item</th>
+							<th class="price" style="text-align: center;">Price</th>
+							<th class="qty">
+								<span class="visible-xs">Qty</span>
+								<span class="hidden-xs">Quantity</span>
+							</th>
+							<th class="total-price" style="text-align: center;">
+								<span class="visible-xs">Total</span>
+								<span class="hidden-xs">Total Price</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="3" class="grand">Grand  Total</th>
+							<th class="total-price">
+								<span id="grand-total"></span>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
             </div>
 		</div>
-		
+
 		
 	</div>
-	
-	
 	
 	
 <!--************************** FOOTER ****************************-->	
 	<div class="clear"></div>
 	
 	<footer>
-			<div class="row footer-info">
-				<div class="col-sm-offset-2 col-sm-2 col-xs-12">
-					<h4>Location</h4>
-					<p style="line-height: 25px;">
-						Somewhere in the campus
-						<br/>
-						IIEST Shibpur
-						<br/>
-						P.O. Botanic Garden
-						<br/>
-						Howrah, India - 711103
-					</p>
-					<p>
-						<span style="color: #413e36;">Open Daily 8am - 8pm</span>
-					</p>
-				</div>
-				<div class="col-sm-2 col-xs-12 center-text">
-					<h4>IIEST, Shibpur</h4>
-					<a href="#">Institute Website</a><br/>
-					<a href="#">Alumni Network</a><br/>
-					<a href="menu.html">Another link</a>
-				</div>
-				<div class="col-sm-2 col-xs-12 center-text">
-					<h4>Follow Us</h4>
-					<a href="#">Blog</a><br/>
-					<a href="#">Facebook</a><br/>
-					<a href="#">Twitter</a>
-				</div>
-				<div class="col-sm-2 col-xs-12 center-text">
-					<h4>Contact</h4>
-					<p>
-						<i class="fa fa-phone fa-fw"></i> : +91 (033) 2668 4561
-						<br/>
-						<i class="fa fa-fax fa-fw"></i> : +91 (033) 2668 2916
-						<br/>
-						<i class="fa fa-envelope fa-fw"></i> : <a href="#">tata@iiests.ac.in</a>
-					</p>
-
-				</div>
-				<div class="clear"></div>
+		<div class="row footer-info">
+			<div class="col-sm-offset-2 col-sm-2 col-xs-12">
+				<h4>Location</h4>
+				<p style="line-height: 25px;">
+					Somewhere in the campus
+					<br/>
+					IIEST Shibpur
+					<br/>
+					P.O. Botanic Garden
+					<br/>
+					Howrah, India - 711103
+				</p>
+				<p>
+					<span style="color: #413e36;">Open Daily 8am - 8pm</span>
+				</p>
 			</div>
-			<div class="row footer-copyright">
-				<div class="col-sm-12">
-					<p>
-						©2016 Tata Research Canteen, 
-						Indian Institute of Engineering Science and Technology, Shibpur
-					</p>
-				</div>
+			<div class="col-sm-2 col-xs-12 center-text">
+				<h4>IIEST, Shibpur</h4>
+				<a href="#">Institute Website</a><br/>
+				<a href="#">Alumni Network</a><br/>
+				<a href="menu.html">Another link</a>
 			</div>
-		</footer>
+			<div class="col-sm-2 col-xs-12 center-text">
+				<h4>Follow Us</h4>
+				<a href="#">Blog</a><br/>
+				<a href="#">Facebook</a><br/>
+				<a href="#">Twitter</a>
+			</div>
+			<div class="col-sm-2 col-xs-12 center-text">
+				<h4>Contact</h4>
+				<p>
+					<i class="fa fa-phone fa-fw"></i> : +91 (033) 2668 4561
+					<br/>
+					<i class="fa fa-fax fa-fw"></i> : +91 (033) 2668 2916
+					<br/>
+					<i class="fa fa-envelope fa-fw"></i> : <a href="#">tata@iiests.ac.in</a>
+				</p>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="row footer-copyright">
+			<div class="col-sm-12">
+				<p>
+					©2016 Tata Research Canteen, 
+					Indian Institute of Engineering Science and Technology, Shibpur
+				</p>
+			</div>
+		</div>
+	</footer>
 	
 	<script src="./js/jquery.1.11.2.min.js"></script>
 	<script src="./js/jquery.session.js"></script>
