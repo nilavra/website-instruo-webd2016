@@ -307,7 +307,7 @@ hr {
 
 .session-info{ font-size: 16px;}
 
-span.badge#num_items { background-color: #D49637;}
+span.badge#cart_num_items { background-color: #D49637;}
 
 
 
@@ -411,3 +411,7 @@ span.badge#num_items { background-color: #D49637;}
     clear: both;
 }
 
+.remove-from-cart{
+	background-color: #5cb85c;
+	cursor: pointer;
+}

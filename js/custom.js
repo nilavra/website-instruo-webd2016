@@ -19,11 +19,267 @@ function hideLoader()
 	$("#preloader").fadeOut('fast','swing');
 }
 
+function getCurrentPath()
+{
+	return window.location.pathname.split('/').pop();
+}
+
+//----------- menu info ----------
+
+var menu_all_category = [];
+var menu_all_category_desc = [];
+
+var menu_item_id = [];
+var menu_item = [];
+var menu_cateogry = [];
+var menu_cateogry_desc = [];
+var menu_price = [];
+
+//-------- cart info --------
+var cart_num_items = 0;
+var cart_item_id = [];
+var cart_qty = [];
+var cart_tot_price = 0;
+var cart_order_no = '';
+
+
+
+function saveCart()
+{
+	if($.session.get('userid')) //store cart only if logged in
+	{
+		//clear data if prev data exists
+		if($.session.get('cart_num_items'))
+		{
+			$.session.remove('cart_num_items');
+			$.session.remove('cart_item_id');
+			$.session.remove('cart_qty');
+			$.session.remove('cart_order_no');
+		}
+		
+		$.session.set('cart_num_items', cart_num_items);
+		$.session.set('cart_item_id', JSON.stringify(cart_item_id));
+		$.session.set('cart_qty', JSON.stringify(cart_qty));
+		$.session.set('cart_order_no', cart_order_no);
+	}
+	else
+	{
+		$.notify({
+			title: '<strong>Error!</strong>',
+			message: 'Cart information could not be saved. User is not logged in.'
+		},{
+			type: 'danger',
+			placement: {
+				from: 'top',
+				align: 'center'
+			},
+			delay:3000
+		});
+	}
+}
+
+
+function loadCart()
+{
+	if($.session.get('userid')) //retrieve cart only if logged in
+	{
+		if($.session.get('cart_num_items'))
+		{
+			cart_num_items = parseInt($.session.get('cart_num_items'));
+			cart_item_id = JSON.parse($.session.get('cart_item_id'));
+			cart_qty = JSON.parse($.session.get('cart_qty'));
+			cart_order_no = $.session.get('cart_order_no');
+		}
+		
+	}
+	else
+	{
+		$.notify({
+			title: '<strong>Error!</strong>',
+			message: 'Cart information could not be retrieved. User is not logged in.'
+		},{
+			type: 'danger',
+			placement: {
+				from: 'top',
+				align: 'center'
+			},
+			delay:3000
+		});
+	}
+}
+
+
+//also used for qty change
+function addToCart(add_item_id, add_qty)
+{
+	if($.session.get('userid')) //add to cart only if logged in
+	{
+		var index = cart_item_id.indexOf(add_item_id);
+		
+		if(add_qty < 1) add_qty = 1;
+		if(add_qty > 10) add_qty = 10;
+		
+		if(index > -1)
+		{
+			cart_item_id.splice(index, 1);
+			cart_qty.splice(index, 1);
+			cart_num_items--;
+		}
+		
+		index = menu_item_id.indexOf(add_item_id);
+		
+		if(index > - 1)
+		{
+			cart_num_items++;
+			cart_item_id.push(add_item_id);
+			cart_qty.push(add_qty);
+			
+			var unit_price = menu_price[index];
+
+			cart_tot_price = cart_tot_price + add_qty * unit_price;
+
+			saveCart();
+
+			$.notify({
+				title: '<strong>Success!</strong>',
+				message: 'Cart updated with ' + add_qty + ' ' + menu_item[index] + ' successfully!'
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+			
+			//update HTML
+			$('.remove-from-cart[data-item_id=' + add_item_id + ']').show();
+			$('.btn-disp[data-item_id=' + add_item_id + ']').html(' ' + add_qty + ' ');
+			$('input[name=qty][data-item_id=' + add_item_id + ']').val(add_qty);
+			$('span#cart_num_items').html(' ' + cart_num_items + ' ');
+		}
+		else
+		{
+			$.notify({
+				title: '<strong>Error!</strong>',
+				message: 'Invalid menu item ordered.'
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+		}
+	}
+	else
+	{
+		$.notify({
+			title: '<strong>Error!</strong>',
+			message: 'Cart information could not be retrieved. User is not logged in.'
+		},{
+			type: 'danger',
+			placement: {
+				from: 'top',
+				align: 'center'
+			},
+			delay:3000
+		});
+	}
+}
+
+
+
+function removeFromCart(remove_item_id)
+{
+	if($.session.get('userid')) //add to cart only if logged in
+	{
+		var index1 = cart_item_id.indexOf(remove_item_id); 
+		var index2 = menu_item_id.indexOf(remove_item_id); 
+		
+		if(index1 > -1 && index2 > -1)
+		{
+			var remove_qty = cart_qty[index1];
+			
+			cart_item_id.splice(index1, 1);
+			cart_qty.splice(index1, 1);
+			cart_num_items--;
+			
+			var unit_price = menu_price[index2];
+			cart_tot_price = cart_tot_price - remove_qty * unit_price;
+
+			saveCart();
+
+			$.notify({
+				title: '<strong>Success!</strong>',
+				message: remove_qty + ' ' + menu_item[index2] + ' removed from cart successfully!'
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+			
+			//update HTML
+			$('.remove-from-cart[data-item_id=' + remove_item_id + ']').hide();
+			$('.btn-disp[data-item_id=' + remove_item_id + ']').html(' 1 ');
+			$('input[name=qty][data-item_id=' + remove_item_id + ']').val(1);
+			$('span#cart_num_items').html(' ' + cart_num_items + ' ');
+		}
+		else if(index1 < 0)
+		{
+			$.notify({
+				title: '<strong>Error!</strong>',
+				message: 'Item is not present in cart.'
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+		}
+		else if(index2 < 0)
+		{
+			$.notify({
+				title: '<strong>Error!</strong>',
+				message: 'Invalid menu item.'
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+		}
+		
+		
+	}
+	else
+	{
+		$.notify({
+			title: '<strong>Error!</strong>',
+			message: 'Cart information could not be retrieved. User is not logged in.'
+		},{
+			type: 'danger',
+			placement: {
+				from: 'top',
+				align: 'center'
+			},
+			delay:3000
+		});
+	}
+}
+
+
 
 function loadMenu()
 {
-    var categories = [];
-	var category_desc = [];
     $.getJSON('menu.json', function(result) 
     {
         result = result.menu;
@@ -44,55 +300,80 @@ function loadMenu()
                 //replacing space and converting to lowercase
                 CATEGORY = CATEGORY_DESC.replace(/\s+/g, '-').toLowerCase();
                 
-                if( $.inArray(CATEGORY, categories) < 0 )
+                if( menu_all_category.indexOf(CATEGORY) < 0 )
 				{
-					categories.push(CATEGORY);
-					category_desc.push(CATEGORY_DESC);
+					menu_all_category.push(CATEGORY);
+					menu_all_category_desc.push(CATEGORY_DESC);
 				}
-                    
+                
+				menu_item_id.push(ITEMID);
+				menu_item.push(ITEM);
+				menu_cateogry.push(CATEGORY);
+				menu_all_category_desc.push(CATEGORY_DESC);
+				menu_price.push(PRICE);
+				
+				if(getCurrentPath() === 'menu.html') //display meny only in menu.html
+				{
+					html =  
+					'<figure class="product-figure" data-name="' + ITEM + '" data-category="' + CATEGORY + '">'
+				   +'    <img src="img/menu/id_' + ITEMID + '.jpg" class="img-responsive" alt="img-' + ITEMID + '">'
+				   +'     <div class="product-detail">'
+				   +'        <h3>'
+				   +				ITEM
+				   +'              <span class="badge remove-from-cart" data-item_id="' + ITEMID + '" style="display:none;" title="Remove this item from cart">'
+				   +'					<i class="fa fa-times"></i>'
+				   +'              </span>'
+				   +'        </h3>'
+				   +'        <h3>&#x20B9; ' + PRICE + '</h3>'
+				   +'     </div>'
+				   +'     <div class="row">'
+				   +'         <div class="col-xs-6">'
+				   +'             <button class="btn add-to-cart" data-item_id="' + ITEMID + '">Add to cart</button>'
+				   +'         </div>'
+				   +'         <div class="col-xs-6">'
+				   +'             <div class="btn-group" role="group">'
+				   +'                 <button class="btn btn-qty btn-minus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-minus"></i> </button>'
+				   +'                 <button class="btn btn-qty btn-disp" type="button" data-item_id="' + ITEMID + '"> 1 </button>'
+				   +'                 <input type="hidden" name="qty" class="form-control" value="1" data-item_id="' + ITEMID + '">'
+				   //+'                 <input type="hidden" name="price" class="form-control" value="' + PRICE + '" data-item_id="' + ITEMID + '">'
+				   +'                 <button class="btn btn-qty btn-plus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-plus"></i> </button>'
+				   +'             </div>'
+				   +'         </div>'
+				   +'     </div>'
+				   +' </figure>';
 
-                html =  
-                 '<figure class="product-figure" data-name="' + ITEM + '" data-category="' + CATEGORY + '">'
-                +'    <img src="img/menu/id_' + ITEMID + '.jpg" class="img-responsive" alt="img-' + ITEMID + '">'
-                +'     <div class="product-detail">'
-                +'        <h3>' + ITEM + '</h3>'
-                +'         <h3>&#x20B9; ' + PRICE + '</h3>'
-                +'     </div>'
-                +'     <div class="row">'
-                +'         <div class="col-xs-6">'
-                +'             <a class="btn add-to-cart" data-item_id="' + ITEMID + '">Add to cart</a>'
-                +'         </div>'
-                +'         <div class="col-xs-6">'
-                +'             <div class="btn-group" role="group">'
-                +'                 <button class="btn btn-qty btn-minus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-minus"></i> </button>'
-                +'                 <button class="btn btn-qty btn-disp" type="button" data-item_id="' + ITEMID + '"> 1 </button>'
-                +'                 <input type="hidden" name="qty" class="form-control" value="1" data-item_id="' + ITEMID + '">'
-                +'                 <input type="hidden" name="price" class="form-control" value="' + PRICE + '" data-item_id="' + ITEMID + '">'
-                +'                 <button class="btn btn-qty btn-plus" type="button" data-item_id="' + ITEMID + '"> <i class="fa fa-plus"></i> </button>'
-                +'             </div>'
-                +'         </div>'
-                +'     </div>'
-                +' </figure>';
-        
-                $('div#grid').append(html);
+				   $('div#grid').append(html);
+				}
             }
         }
 		
-		for(var i = 0; i < categories.length; i++)
-        {
-			CATEGORY = categories[i];
-			CATEGORY_DESC = category_desc[i];
-			
-			html =  
-			 '<label class="btn btn-cat-filter">'
-			+'       <input type="radio" name="cat-filter" data-category="' + CATEGORY + '"> ' + CATEGORY_DESC
-			+'</label>';
+		if(getCurrentPath() === 'menu.html')
+		{
+			//create category filter buttons
+			for(var i = 0; i < menu_all_category.length; i++)
+			{
+				CATEGORY = menu_all_category[i];
+				CATEGORY_DESC = menu_all_category_desc[i];
 
-			$('div#cat-select').append(html);
-			
-        }
+				html =  
+				 '<label class="btn btn-cat-filter">'
+				+'       <input type="radio" name="cat-filter" data-category="' + CATEGORY + '"> ' + CATEGORY_DESC
+				+'</label>';
 
-        
+				$('div#cat-select').append(html);
+			}
+			
+			//update added to cart
+			for(var i = 0; i < cart_item_id.length; i++)
+			{
+				var item_id = menu_item_id[i];
+				var qty = cart_qty[i];
+				
+				$('.remove-from-cart[data-item_id=' + item_id + ']').show();
+				$('.btn-disp[data-item_id=' + item_id + ']').html(' ' + qty + ' ');
+				$('input[name=qty][data-item_id=' + item_id + ']').val(qty);
+			}
+		}
     });
 }
 
@@ -101,31 +382,45 @@ function loadMenu()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 $(document).ready(function()
 {
-	var current_path = window.location.pathname.split('/').pop();
 	//if not logged in, redirect to index.html
-	if(!$.session.get('userid') && current_path !== 'index.html' )
+	if(!$.session.get('userid') && getCurrentPath() !== 'index.html' )
 		window.location.replace('index.html');
-	else if($.session.get('userid') && current_path === 'index.html' )
+	else if($.session.get('userid') && getCurrentPath() === 'index.html' )
 		window.location.replace('menu.html');
+	
+	
 
 /*--------------------------- highlight current link --------------------------- */
-	$('.nav a[href="' + current_path + '"]').addClass('active');
+	$('.nav a[href="' + getCurrentPath() + '"]').addClass('active');
 	
+
+
 /*--------------------------- display session info --------------------------- */
 	if($.session.get('userid'))
 	{
-		$('span#username').html('Welcome <b>' + $.session.get('username') + '</b>');
+		$('span#username').html('Welcome <b>' + $.session.get('username') + '</b>');	
 		
-		var num_items = 0;
+		if($.session.get('cart_num_items'))
+			cart_num_items = $.session.get('cart_num_items');
 		
-		if($.session.get('num_items'))
-			num_items = $.session.get('num_items');
-		
-		$('span#num_items').html(' ' + num_items + ' ');
+		$('span#cart_num_items').html(' ' + cart_num_items + ' ');
 	}
-	
+
+
+
 /*----------------------------------- SIGN-IN ------------------------------ */
 	$('#form-signin').submit(function()
 	{
@@ -185,16 +480,27 @@ $(document).ready(function()
 	});
 	
     
-/*----------------------------------- display menu ------------------------------ */    
-    if(current_path === 'menu.html') 
+
+
+/*----------------------------------- load menu ------------------------------ */    
+    if(getCurrentPath() === 'menu.html' || getCurrentPath() === 'order.html')
+	{
+		loadCart();
         loadMenu();
-    
+	}
+
+	
+
+
 /*----------------------------------- SEARCH ------------------------------ */
 	var cat_filter = '%', search_key = '';
 	
 	$('#search-input').keyup(function()
 	{
 		search_key = $(this).val().toLowerCase();
+		
+		console.log(search_key);
+		
 		if(search_key.length > 0)
 		{
 			$('a#search-clear').removeClass('hidden');
@@ -204,14 +510,14 @@ $(document).ready(function()
 				$(this).data('name').toLowerCase().indexOf(search_key) === 0 //|| $(this).data('category').toLowerCase().indexOf(search_key) >= 0
 					;
 				return !found;
-			}).hide('slow');
+			}).hide();
 		}
 		else
 		{
 			if(cat_filter === '%')
-				$('.product-figure').show('slow');
+				$('.product-figure').show();
 			else
-				$('.product-figure[data-category=' + cat_filter + ']').show('slow');
+				$('.product-figure[data-category=' + cat_filter + ']').show();
 		}
 	});
 	
@@ -219,9 +525,9 @@ $(document).ready(function()
 	$('a#search-clear').click(function()
 	{
 		if(cat_filter === '%')
-			$('.product-figure').show('slow');
+			$('.product-figure').show();
 		else
-			$('.product-figure[data-category=' + cat_filter + ']').show('slow');
+			$('.product-figure[data-category=' + cat_filter + ']').show();
 		
 		$('#search-input').val('');
 		$(this).addClass('hidden');
@@ -282,15 +588,28 @@ $(document).ready(function()
 		return false;
 	});
     
-	//cart structure:
-	/**
-	 * CART STRUCTURE:
-	 *  num_items
-	 *  [ {item_id, qty, price} ]
-	 *  tot_price
-	 *  order_no
-	 */
 	
+	
+/*----------------------------------- ADD / REMOVE FROM CART ------------------------------ */	
+	$('body').on('click', 'button.add-to-cart', function()
+	{
+        var item_id = $(this).data('item_id')+'';
+        var qty = parseInt( $('input[name=qty][data-item_id='+item_id+']').val() );
+        
+        addToCart(item_id, qty);
+		
+		return false;
+	});
+	
+	$('body').on('click', 'span.remove-from-cart', function()
+	{
+        var item_id = $(this).data('item_id')+'';
+        
+		removeFromCart(item_id);
+		
+		return false;
+	});
+
 
 /*----------------------------------- CHECK-OUT ------------------------------ */
 	

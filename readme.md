@@ -1,7 +1,7 @@
 http://brownscourt.com/about/
 
 1. js cookie - sessions:
-http://stackoverflow.com/questions/2257631/how-create-a-session-using-javascript
+https://github.com/AlexChittock/JQuery-Session-Plugin
 
 2. load local json
 http://stackoverflow.com/questions/27360326/how-do-i-load-my-local-json-file-just-using-javascript
