@@ -32,11 +32,10 @@
 	<script src="./js/custom.js"></script>
 	
 	<script>
-		$(document).ready(function()
-		{
-			$.session.clear();
-			window.location.replace('index.html');
-		});
+		showLoader();
+		$.session.clear();
+		window.location.replace('index.html');
+		hideLoader();
 	</script>
 </body>
 

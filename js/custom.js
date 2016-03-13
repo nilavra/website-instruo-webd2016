@@ -1,23 +1,22 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 //to show loader during Ajax calls
 function showLoader()
 {
 	var img = new Image();
-	img.src = $('#preloader img').attr('src');
+	img.src = $('#ajaxload img').attr('src');
 	img.onload = function() 
 	{
-		$("#preloader").fadeIn('fast','swing');
+		$("#ajaxload").fadeIn('fast','swing');
 	};
 }
 
 function hideLoader()
 {
-	$("#preloader").fadeOut('fast','swing');
+	$("#ajaxload").fadeOut('fast','swing');
 }
+
+
+
 
 function getCurrentPath()
 {
@@ -142,7 +141,7 @@ function addToCart(add_item_id, add_qty)
 
 			$.notify({
 				title: '<strong>Success!</strong>',
-				message: 'Cart updated with ' + add_qty + ' ' + menu_item[index] + ' successfully!'
+				message: 'Cart updated with <b>' + add_qty + '</b> ' + menu_item[index] + '.'
 			},{
 				type: 'success',
 				placement: {
@@ -213,7 +212,7 @@ function removeFromCart(remove_item_id)
 
 			$.notify({
 				title: '<strong>Success!</strong>',
-				message: remove_qty + ' ' + menu_item[index2] + ' removed from cart successfully!'
+				message: '<b>' + remove_qty + '</b> ' + menu_item[index2] + ' removed from cart.'
 			},{
 				type: 'success',
 				placement: {
@@ -280,6 +279,8 @@ function removeFromCart(remove_item_id)
 
 function loadMenu()
 {
+	showLoader();
+	
     $.getJSON('menu.json', function(result) 
     {
         result = result.menu;
@@ -309,7 +310,6 @@ function loadMenu()
 				menu_item_id.push(ITEMID);
 				menu_item.push(ITEM);
 				menu_cateogry.push(CATEGORY);
-				menu_all_category_desc.push(CATEGORY_DESC);
 				menu_price.push(PRICE);
 				
 				if(getCurrentPath() === 'menu.html') //display meny only in menu.html
@@ -374,12 +374,47 @@ function loadMenu()
 				$('input[name=qty][data-item_id=' + item_id + ']').val(qty);
 			}
 		}
+		
+		hideLoader();
     });
 }
 
 
 
 
+function search(_search_key, _cat_filter)
+{
+	$('.product-figure').show();
+	
+
+	if(_search_key === '')
+	{
+		if(_cat_filter !== '%')
+			$('.product-figure[data-category!=' + _cat_filter + ']').hide();
+	}
+	else
+	{
+		if(_cat_filter === '%')
+		{
+			$('.product-figure').filter( function(index)
+			{
+				var found = $(this).data('name').toLowerCase().indexOf(_search_key) === 0
+							;
+				return !found;
+			}).hide();
+		}
+		else
+		{
+			$('.product-figure').filter( function(index)
+			{
+				var found = $(this).data('name').toLowerCase().indexOf(_search_key) === 0 
+							&& $(this).data('category') === _cat_filter
+							;
+				return !found;
+			}).hide();
+		}
+	}
+}
 
 
 
@@ -424,6 +459,7 @@ $(document).ready(function()
 /*----------------------------------- SIGN-IN ------------------------------ */
 	$('#form-signin').submit(function()
 	{
+		showLoader();
 		$.session.clear();
 		
 		var username = $('input[name=username]').val();
@@ -453,6 +489,8 @@ $(document).ready(function()
 				}
 			}
 			
+			hideLoader();
+			
 			if(found)
 				window.location.replace('menu.html');
 			else
@@ -476,6 +514,7 @@ $(document).ready(function()
 			}
 		});
 		
+		hideLoader();
 		return false;
 	});
 	
@@ -499,37 +538,26 @@ $(document).ready(function()
 	{
 		search_key = $(this).val().toLowerCase();
 		
-		console.log(search_key);
-		
 		if(search_key.length > 0)
 		{
 			$('a#search-clear').removeClass('hidden');
-			$('.product-figure').filter( function(index)
-			{
-				var found = 
-				$(this).data('name').toLowerCase().indexOf(search_key) === 0 //|| $(this).data('category').toLowerCase().indexOf(search_key) >= 0
-					;
-				return !found;
-			}).hide();
+			search(search_key, cat_filter);
 		}
 		else
 		{
-			if(cat_filter === '%')
-				$('.product-figure').show();
-			else
-				$('.product-figure[data-category=' + cat_filter + ']').show();
+			$('a#search-clear').addClass('hidden');
+			search(search_key, cat_filter);
 		}
 	});
 	
 	
 	$('a#search-clear').click(function()
 	{
-		if(cat_filter === '%')
-			$('.product-figure').show();
-		else
-			$('.product-figure[data-category=' + cat_filter + ']').show();
+		search_key = '';
 		
-		$('#search-input').val('');
+		search(search_key, cat_filter);
+		
+		$('#search-input').val(search_key);
 		$(this).addClass('hidden');
 		$('#search-input').focus();
 		
@@ -539,13 +567,8 @@ $(document).ready(function()
 	
 	$('body').on('change', 'input[name=cat-filter]', function()
 	{
-		$('.product-figure').show();
-        
-		cat_filter = $(this).data('category');
-        
-		if(cat_filter !== '%')
-			$('.product-figure[data-category!=' + cat_filter + ']').hide();
-		
+		cat_filter = $(this).data('category');   
+		search(search_key, cat_filter);
 		return false;
 	});
     
@@ -595,18 +618,14 @@ $(document).ready(function()
 	{
         var item_id = $(this).data('item_id')+'';
         var qty = parseInt( $('input[name=qty][data-item_id='+item_id+']').val() );
-        
         addToCart(item_id, qty);
-		
 		return false;
 	});
 	
 	$('body').on('click', 'span.remove-from-cart', function()
 	{
         var item_id = $(this).data('item_id')+'';
-        
 		removeFromCart(item_id);
-		
 		return false;
 	});
 
