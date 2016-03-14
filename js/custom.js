@@ -559,6 +559,11 @@ function confirmOrder()
             
         cart_order_no = order_no;
         cart_confirm_order = 'Y';
+		
+		//cart_item_id = [];
+		//cart_num_items = 0;
+		//cart_qty = [];
+		
         saveCart();
     }
     else
@@ -689,7 +694,7 @@ $(document).ready(function()
 	$('#search-input').keyup(function()
 	{
 		search_key = $(this).val().toLowerCase();
-		
+
 		if(search_key.length > 0)
 		{
 			$('a#search-clear').removeClass('hidden');
@@ -700,6 +705,7 @@ $(document).ready(function()
 			$('a#search-clear').addClass('hidden');
 			search(search_key, cat_filter);
 		}
+		
 	});
 	
 	
@@ -724,6 +730,7 @@ $(document).ready(function()
 		return false;
 	});
     
+	
 
 	
 
@@ -823,18 +830,21 @@ $(document).ready(function()
     
 	$(window).scroll(function (event) 
 	{
-		vTop = $(document).height() - $('footer').outerHeight(true);
-		y = $(this).scrollTop() + $(window).height();
-		
-		if (y < vTop)
+		if(getCurrentPath() === 'menu.html' || getCurrentPath() === 'order.html')
 		{
-			$('.sticky-order-now').show();
-            $('.sticky-confirm-order').show();
-		} 
-		else 
-		{
-			$('.sticky-order-now').hide();
-            $('.sticky-confirm-order').hide();
+			vTop = $(document).height() - $('footer').outerHeight(true);
+			y = $(this).scrollTop() + $(window).height();
+
+			if (y < vTop)
+			{
+				$('.sticky-order-now').show();
+				$('.sticky-confirm-order').show();
+			} 
+			else 
+			{
+				$('.sticky-order-now').hide();
+				$('.sticky-confirm-order').hide();
+			}
 		}
 	});
 
@@ -861,6 +871,31 @@ $(document).ready(function()
 		
 		return false;
 	});
+	
+	
+	
+/*----------------------------------- SHOW ORDER NUMBER ------------------------------ */    
+    if(getCurrentPath() === 'home.html')
+	{
+		loadCart();
+		if(cart_confirm_order === 'Y')
+		{
+			var html =   
+					'<div class="alert alert-success alert-dismissible" style="text-align: center;">'
+					+'	<button type="button" class="close" data-dismiss="alert"> <i class="fa fa-times"></i> </button>'
+					+'	Your order has been placed.'
+					+'	<br/>'
+					+'	Your order number is:'
+					+'	<br/>'
+					+'	<b>' + cart_order_no + '</b>.'
+					+'	<br/>'
+					+'	Please collect your order from the counter after some time.'
+					+'</div>';
+		
+			$('#home-order-confirm').append(html);
+		}
+		
+	}	
     
 	
 });
