@@ -443,7 +443,8 @@ span.badge.remove-from-cart{
 
 
 
-.btn.place-order {
+.btn.order-now, .btn.confirm-order
+{
     background-color: #d49637; 
     border: 2px solid #cc8c2c;
     color: #fff;
@@ -455,14 +456,17 @@ span.badge.remove-from-cart{
 	z-index: 99;
 }
 
-.btn.place-order:hover{
+.btn.order-now:hover, .btn.confirm-order:hover
+{
     background-color: #9b6b21;
     border: 2px solid #8b601e;
     color: #fff;
 	z-index: 99;
 }
 
-.sticky{
+.sticky-order-now,
+.sticky-confirm-order
+{
 	position: fixed;
 	bottom: 0px;
 	padding-top: 10px;
@@ -473,7 +477,8 @@ span.badge.remove-from-cart{
 
 @media(min-width: 768px)
 {
-	.sticky{display: none!important;}
+	.sticky-order-now,.sticky-confirm-order
+    {display: none!important;}
 }
 
 

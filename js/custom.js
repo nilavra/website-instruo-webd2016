@@ -39,6 +39,7 @@ var cart_num_items = 0;
 var cart_item_id = [];
 var cart_qty = [];
 var cart_order_no = '';
+var cart_confirm_order = 'N';
 
 
 
@@ -53,12 +54,14 @@ function saveCart()
 			$.session.remove('cart_item_id');
 			$.session.remove('cart_qty');
 			$.session.remove('cart_order_no');
+            $.session.remove('cart_confirm_order');
 		}
 		
 		$.session.set('cart_num_items', cart_num_items);
 		$.session.set('cart_item_id', JSON.stringify(cart_item_id));
 		$.session.set('cart_qty', JSON.stringify(cart_qty));
 		$.session.set('cart_order_no', cart_order_no);
+        $.session.set('cart_confirm_order', cart_confirm_order);
 	}
 	else
 	{
@@ -87,6 +90,7 @@ function loadCart()
 			cart_item_id = JSON.parse($.session.get('cart_item_id'));
 			cart_qty = JSON.parse($.session.get('cart_qty'));
 			cart_order_no = $.session.get('cart_order_no');
+            cart_confirm_order = $.session.get('cart_confirm_order');
 		}
 		
 	}
@@ -112,63 +116,80 @@ function addToCart(add_item_id, add_qty)
 {
 	if($.session.get('userid')) //add to cart only if logged in
 	{
-		var cart_index = cart_item_id.indexOf(add_item_id);
-		var menu_index = menu_item_id.indexOf(add_item_id);
-		
-		if(menu_index > - 1)
-		{
-			if(add_qty < 1) add_qty = 1;
-			if(add_qty > 10) add_qty = 10;
-			
-			if(cart_index > -1)
-			{
-				cart_qty[cart_index] = add_qty;
-			}
-			else
-			{
-				cart_num_items++;
-				cart_item_id.push(add_item_id);
-				cart_qty.push(add_qty);
-			}
-			
-			saveCart();
+        if(cart_confirm_order === 'N')
+        {
+            var cart_index = cart_item_id.indexOf(add_item_id);
+            var menu_index = menu_item_id.indexOf(add_item_id);
 
-			$.notify({
-				title: '<strong>Success!</strong>',
-				message: 'Cart updated with <b>' + add_qty + '</b> ' + menu_item[menu_index] + '.'
-			},{
-				type: 'success',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:3000
-			});
-			
-			//update HTML
-			if(getCurrentPath() === 'menu.html')
-			{
-				$('.remove-from-cart[data-item_id=' + add_item_id + ']').show();
-				$('.btn-disp[data-item_id=' + add_item_id + ']').html(' ' + add_qty + ' ');
-				$('input[name=qty][data-item_id=' + add_item_id + ']').val(add_qty);
-			}
-			
-			$('span#cart_num_items').html(' ' + cart_num_items + ' ');
-		}
-		else
-		{
-			$.notify({
-				title: '<strong>Error!</strong>',
-				message: 'Invalid menu item ordered.'
-			},{
-				type: 'danger',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:3000
-			});
-		}
+            if(menu_index > - 1)
+            {
+                if(add_qty < 1) add_qty = 1;
+                if(add_qty > 10) add_qty = 10;
+
+                if(cart_index > -1)
+                {
+                    cart_qty[cart_index] = add_qty;
+                }
+                else
+                {
+                    cart_num_items++;
+                    cart_item_id.push(add_item_id);
+                    cart_qty.push(add_qty);
+                }
+
+                saveCart();
+
+                $.notify({
+                    title: '<strong>Success!</strong>',
+                    message: 'Cart updated with <b>' + add_qty + '</b> ' + menu_item[menu_index] + '.'
+                },{
+                    type: 'success',
+                    placement: {
+                        from: 'top',
+                        align: 'center'
+                    },
+                    delay:3000
+                });
+
+                //update HTML
+                if(getCurrentPath() === 'menu.html')
+                {
+                    $('.remove-from-cart[data-item_id=' + add_item_id + ']').show();
+                    $('.btn-disp[data-item_id=' + add_item_id + ']').html(' ' + add_qty + ' ');
+                    $('input[name=qty][data-item_id=' + add_item_id + ']').val(add_qty);
+                }
+
+                $('span#cart_num_items').html(' ' + cart_num_items + ' ');
+            }
+            else
+            {
+                $.notify({
+                    title: '<strong>Error!</strong>',
+                    message: 'Invalid menu item ordered.'
+                },{
+                    type: 'danger',
+                    placement: {
+                        from: 'top',
+                        align: 'center'
+                    },
+                    delay:3000
+                });
+            }
+        }
+        else
+        {
+            $.notify({
+                title: '<strong>Error!</strong>',
+                message: 'Order is already placed. <br/> Order No: ' + cart_order_no
+            },{
+                type: 'danger',
+                placement: {
+                    from: 'top',
+                    align: 'center'
+                },
+                delay:7000
+            });
+        }
 	}
 	else
 	{
@@ -192,71 +213,86 @@ function removeFromCart(remove_item_id)
 {
 	if($.session.get('userid')) //add to cart only if logged in
 	{
-		var index1 = cart_item_id.indexOf(remove_item_id); 
-		var index2 = menu_item_id.indexOf(remove_item_id); 
-		
-		if(index1 > -1 && index2 > -1)
-		{
-			var remove_qty = cart_qty[index1];
-			
-			cart_item_id.splice(index1, 1);
-			cart_qty.splice(index1, 1);
-			cart_num_items--;
-			
-			saveCart();
+        if(cart_confirm_order === 'N')
+        {
+            var index1 = cart_item_id.indexOf(remove_item_id); 
+            var index2 = menu_item_id.indexOf(remove_item_id); 
 
-			$.notify({
-				title: '<strong>Success!</strong>',
-				message: '<b>' + remove_qty + '</b> ' + menu_item[index2] + ' removed from cart.'
-			},{
-				type: 'success',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:3000
-			});
-			
-			//update HTML
-			if(getCurrentPath() === 'menu.html')
-			{
-				$('.remove-from-cart[data-item_id=' + remove_item_id + ']').hide();
-				$('.btn-disp[data-item_id=' + remove_item_id + ']').html(' 1 ');
-				$('input[name=qty][data-item_id=' + remove_item_id + ']').val(1);
-			}
-			
-			$('span#cart_num_items').html(' ' + cart_num_items + ' ');
-		}
-		else if(index1 < 0)
-		{
-			$.notify({
-				title: '<strong>Error!</strong>',
-				message: 'Item is not present in cart.'
-			},{
-				type: 'danger',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:3000
-			});
-		}
-		else if(index2 < 0)
-		{
-			$.notify({
-				title: '<strong>Error!</strong>',
-				message: 'Invalid menu item.'
-			},{
-				type: 'danger',
-				placement: {
-					from: 'top',
-					align: 'center'
-				},
-				delay:3000
-			});
-		}
-		
-		
+            if(index1 > -1 && index2 > -1)
+            {
+                var remove_qty = cart_qty[index1];
+
+                cart_item_id.splice(index1, 1);
+                cart_qty.splice(index1, 1);
+                cart_num_items--;
+
+                saveCart();
+
+                $.notify({
+                    title: '<strong>Success!</strong>',
+                    message: '<b>' + remove_qty + '</b> ' + menu_item[index2] + ' removed from cart.'
+                },{
+                    type: 'success',
+                    placement: {
+                        from: 'top',
+                        align: 'center'
+                    },
+                    delay:3000
+                });
+
+                //update HTML
+                if(getCurrentPath() === 'menu.html')
+                {
+                    $('.remove-from-cart[data-item_id=' + remove_item_id + ']').hide();
+                    $('.btn-disp[data-item_id=' + remove_item_id + ']').html(' 1 ');
+                    $('input[name=qty][data-item_id=' + remove_item_id + ']').val(1);
+                }
+
+                $('span#cart_num_items').html(' ' + cart_num_items + ' ');
+            }
+            else if(index1 < 0)
+            {
+                $.notify({
+                    title: '<strong>Error!</strong>',
+                    message: 'Item is not present in cart.'
+                },{
+                    type: 'danger',
+                    placement: {
+                        from: 'top',
+                        align: 'center'
+                    },
+                    delay:3000
+                });
+            }
+            else if(index2 < 0)
+            {
+                $.notify({
+                    title: '<strong>Error!</strong>',
+                    message: 'Invalid menu item.'
+                },{
+                    type: 'danger',
+                    placement: {
+                        from: 'top',
+                        align: 'center'
+                    },
+                    delay:3000
+                });
+            }
+        }
+        else
+        {
+            $.notify({
+                title: '<strong>Error!</strong>',
+                message: 'Order is already placed. <br/> Order No: ' + cart_order_no
+            },{
+                type: 'danger',
+                placement: {
+                    from: 'top',
+                    align: 'center'
+                },
+                delay:7000
+            });
+        }
 	}
 	else
 	{
@@ -513,7 +549,34 @@ function loadOrderDetails()
 
 
 
-
+function confirmOrder()
+{
+    if(cart_confirm_order !== 'Y')
+    {
+        var d = new Date();
+        var order_no = d.getFullYear() + '' + (d.getMonth() + 1) + '' + d.getDate() + '/'
+                    + parseInt(Math.random() * 50 + 1);
+            
+        cart_order_no = order_no;
+        cart_confirm_order = 'Y';
+        saveCart();
+    }
+    else
+    {
+        $.notify({
+            title: '<strong>Error!</strong>',
+            message: 'Order is already confirmed. <br/> Order No: ' + cart_order_no
+        },{
+            type: 'danger',
+            placement: {
+                from: 'top',
+                align: 'center'
+            },
+            delay:7000
+        });
+    }
+    
+}
 
 
 
@@ -527,11 +590,9 @@ $(document).ready(function()
 	else if($.session.get('userid') && getCurrentPath() === 'index.html' )
 		window.location.replace('menu.html');
 	
-	
 
 /*--------------------------- highlight current link --------------------------- */
 	$('.nav a[href="' + getCurrentPath() + '"]').addClass('active');
-	
 
 
 /*--------------------------- display session info --------------------------- */
@@ -544,7 +605,6 @@ $(document).ready(function()
 		
 		$('span#cart_num_items').html(' ' + cart_num_items + ' ');
 	}
-
 
 
 /*----------------------------------- SIGN-IN ------------------------------ */
@@ -766,11 +826,13 @@ $(document).ready(function()
 		
 		if (y < vTop)
 		{
-			$('.sticky').show();
+			$('.sticky-order-now').show();
+            $('.sticky-confirm-order').show();
 		} 
 		else 
 		{
-			$('.sticky').hide();
+			$('.sticky-order-now').hide();
+            $('.sticky-confirm-order').hide();
 		}
 	});
 
@@ -788,8 +850,23 @@ $(document).ready(function()
 		
 	}
 
-/*----------------------------------- CHECK-OUT ------------------------------ */
+/*----------------------------------- CONFIRM ORDER ------------------------------ */
 	
+    $('body').on('click', 'a.confirm-order', function()
+	{
+        var item_id = $(this).data('item_id')+'';
+		removeFromCart(item_id);
+		
+		loadMenu(function()
+		{
+			loadCart();
+			loadOrderDetails();
+			hideLoader();
+		});
+		
+		return false;
+	});
+    
 	
 });
 
