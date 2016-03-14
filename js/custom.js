@@ -856,15 +856,8 @@ $(document).ready(function()
 	
     $('body').on('click', 'a.confirm-order', function()
 	{
-        var item_id = $(this).data('item_id')+'';
-		removeFromCart(item_id);
-		
-		loadMenu(function()
-		{
-			loadCart();
-			loadOrderDetails();
-			hideLoader();
-		});
+        confirmOrder();
+        window.location.href = 'home.html';
 		
 		return false;
 	});

@@ -9,7 +9,7 @@
 	<meta name="author" content="">
 	<link rel="icon" href="favicon.ico">
 
-	<title>Confirm Your Order | Tata Research Canteen | IIEST Shibpur</title>
+	<title>Home | Tata Research Canteen | IIEST Shibpur</title>
 	
 	<link href="./css/bootstrap.3.3.6.min.css" rel="stylesheet">
 	<link href="./css/font-awesome.4.5.0.min.css" rel="stylesheet">
@@ -39,7 +39,7 @@
 			<div class="hidden-xs">
 				<div class="col-sm-offset-2 col-sm-2 margin-top">
 					<div class="row">
-						<div class="col-sm-6 border-right"><a href="#">Home</a></div>
+						<div class="col-sm-6 border-right"><a href="home.html">Home</a></div>
 						<div class="col-sm-6"><a href="menu.html">Menu</a></div>
 					</div>
 				</div>
@@ -50,7 +50,7 @@
 
 				<div class="col-sm-2 margin-top">
 					<div class="row">
-						<div class="col-xs-6 border-right active"><a href="order.html">Order</a></div>
+						<div class="col-xs-6 border-right"><a href="order.html">Order</a></div>
 						<div class="col-xs-6"><a href="logout.html">Logout</a></div>
 					</div>
 				</div>
@@ -64,7 +64,7 @@
 				
 				<div class="col-xs-12">
 					<div class="row margin-top">
-						<div class="col-xs-3 border-right"><a href="#">Home</a></div>
+						<div class="col-xs-3 border-right"><a href="home.html">Home</a></div>
 						<div class="col-xs-3 border-right"><a href="menu.html">Menu</a></div>
 						<div class="col-xs-3 border-right"><a href="order.html">Order</a></div>
 						<div class="col-xs-3"><a href="logout.html">Logout</a></div>
@@ -95,7 +95,7 @@
 		
 		<div class="row">
 			<div class="col-xs-12" style="text-align: center;">
-				<h1 style="margin-top: 10px; margin-bottom: 20px;">Order Details</h1>
+                <h1 class="h2" style="margin-top: 10px; margin-bottom: 20px;">Home</h1>
 			</div>
 		</div>
 		
@@ -105,63 +105,22 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-offset-1 col-sm-10">
-                <table class="table table-bordered order-details">
-					<thead>
-						<tr>
-							<!--th class="sl-no">Sl.</th-->
-							<th class="item">Item</th>
-							<th class="price" style="text-align: center;">Price</th>
-							<th class="qty">
-								<span class="visible-xs">Qty</span>
-								<span class="hidden-xs">Quantity</span>
-							</th>
-							<th class="total-price" style="text-align: center;">
-								<span class="visible-xs">Total</span>
-								<span class="hidden-xs">Total Price</span>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-					<tfoot>
-						<tr>
-							<th colspan="3" class="grand">Grand  Total</th>
-							<th class="total-price">
-								<span id="grand-total"></span>
-							</th>
-						</tr>
-					</tfoot>
-				</table>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="home-order-confirm">
+                        <div class="alert alert-success" style="text-align: center">
+                            Your order has been placed.
+                            <br/>
+                            Your order number:
+                            <br/>
+                            <b>20160314/24</b>.
+                            <br/>
+                            Please collect your order from the counter after some time.
+                        </div>
+                    </div>
+                </div>
             </div>
 		</div>
-
-
-        <div class="row sticky-confirm-order">
-            <div class="col-xs-6">
-                <a class="btn btn-lg center-block btn-block btn-qty" href="menu.html">
-                    <i class="fa fa-chevron-left fa-fw"></i>
-                    Go Back
-                </a>
-			</div>
-			<div class="col-xs-6">
-				<a class="btn btn-lg center-block btn-block confirm-order" href="#">Confirm</a>
-			</div>
-		</div>
         
-
-
-        <div class="row">
-            <div class="col-xs-12" style="text-align: right">
-                <a class="btn btn-lg btn-qty" href="menu.html" style="margin-bottom: 10px">
-                    <i class="fa fa-chevron-left fa-fw"></i>
-                    Go Back
-                </a>
-                &nbsp;&nbsp;
-                <a class="btn btn-lg confirm-order" href="#">Confirm</a>
-            </div>
-        </div>
-        
-
 		
 	</div>
 	
