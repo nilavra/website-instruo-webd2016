@@ -819,10 +819,12 @@ $(document).ready(function()
 	
 /*----------------------------------- PLACE ORDER STICKY FOOTER ------------------------------ */
 	
+    var vTop = 0, y = 0;
+    
 	$(window).scroll(function (event) 
 	{
-		var vTop = $(document).height() - $('footer').outerHeight(true);
-		var y = $(this).scrollTop() + $(window).height();
+		vTop = $(document).height() - $('footer').outerHeight(true);
+		y = $(this).scrollTop() + $(window).height();
 		
 		if (y < vTop)
 		{
