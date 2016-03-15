@@ -10,53 +10,22 @@
     font-weight: normal;
     font-style: normal;
 }
- 
 @font-face {
     font-family: 'Roboto';
     src: url('../fonts/Roboto-Italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: italic;
 }
- 
 @font-face {
     font-family: 'Roboto';
     src: url('../fonts/Roboto-Bold-webfont.woff') format('woff');
     font-weight: bold;
     font-style: normal;
 }
- 
 @font-face {
     font-family: 'Roboto';
     src: url('../fonts/Roboto-BoldItalic-webfont.woff') format('woff');
     font-weight: bold;
-    font-style: italic;
-}
- 
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/Roboto-Light-webfont.woff') format('woff');
-    font-weight: 100;
-    font-style: normal;
-}
- 
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/Roboto-LightItalic-webfont.woff') format('woff');
-    font-weight: 100;
-    font-style: italic;
-}
- 
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/Roboto-Medium-webfont.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-}
- 
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/Roboto-MediumItalic-webfont.woff') format('woff');
-    font-weight: 300;
     font-style: italic;
 }
 
@@ -76,10 +45,6 @@ body {
 	body{ padding-top: 25px; }
 }
 
-body > .container{
-	/*min-height: 50%*/
-}
-
 a, a:visited, a:link { color: #605948; text-decoration: none; outline: 0; }
 a:hover, a:focus { color: #D49637; text-decoration: none;}
 p a, p a:visited { line-height: inherit; }
@@ -87,8 +52,6 @@ p a, p a:visited { line-height: inherit; }
 @media(min-width:768px){
 	.center-text{ text-align: center;}
 }
-
-
 
 .clear {
     clear: both;
@@ -303,7 +266,6 @@ fieldset[disabled] .btn-warning.focus {
 .nav a.active{ color: #D49637;}
 
 .nav div.margin-top{ margin-top: 22px;}
-
 
 hr {
 	margin-top: 10px;

@@ -6,13 +6,64 @@ function showLoader()
 	img.src = $('#ajaxload img').attr('src');
 	img.onload = function() 
 	{
-		$("#ajaxload").fadeIn('fast','swing');
+		$('#ajaxload').fadeIn('fast','swing');
 	};
 }
 
 function hideLoader()
 {
-	$("#ajaxload").fadeOut('fast','swing');
+	$('#ajaxload').fadeOut('fast','swing');
+}
+
+//js version of mysql_real_escape_string()
+function sql_real_escape_string (str) 
+{
+    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) 
+    {
+        switch (char) 
+        {
+            case "\0":
+                return "\\0";
+            case "\x08":
+                return "\\b";
+            case "\x09":
+                return "\\t";
+            case "\x1a":
+                return "\\z";
+            case "\n":
+                return "\\n";
+            case "\r":
+                return "\\r";
+            case "\"":
+            case "'":
+            case "\\":
+            case "%":
+                return "\\"+char; // prepends a backslash to backslash, percent,
+                                  // and double/single quotes
+        }
+    });
+}
+
+//to escape HTML entitites
+function escapeHTML(s) 
+{
+	var result = '';
+    var c = '';
+	for (var i = 0; i < s.length; i++) 
+	{
+		c = s.charAt(i);
+        
+		if(c > 127 || c === '"' || c === '<' || c === '>' || c === '&' || c === '\'' || c === '\n')
+		{
+			result = result + '&#' + c.charCodeAt(0) + ';';
+		} 
+		else 
+		{
+			result = result + c;
+		}
+	}
+    
+	return sql_real_escape_string(result);
 }
 
 
@@ -618,8 +669,8 @@ $(document).ready(function()
 		showLoader();
 		$.session.clear();
 		
-		var username = $('input[name=username]').val();
-		var password = $('input[name=password]').val();
+		var username = escapeHTML( $('input[name=username]').val() );
+		var password = escapeHTML( $('input[name=password]').val() );
 		var password_md5 = $.md5(password);
 		
 		var found = false;
