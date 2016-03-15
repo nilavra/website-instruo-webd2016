@@ -604,18 +604,37 @@ function confirmOrder()
 {
     if(cart_confirm_order !== 'Y')
     {
-        var d = new Date();
-        var order_no = d.getFullYear() + '' + (d.getMonth() + 1) + '' + d.getDate() + '/'
-                    + parseInt(Math.random() * 50 + 1);
-            
-        cart_order_no = order_no;
-        cart_confirm_order = 'Y';
-		
-		//cart_item_id = [];
-		//cart_num_items = 0;
-		//cart_qty = [];
-		
-        saveCart();
+		if(cart_num_items > 0)
+		{
+			var d = new Date();
+			var order_no = d.getFullYear() + '' + (d.getMonth() + 1) + '' + d.getDate() + '/'
+						+ parseInt(Math.random() * 50 + 1);
+
+			cart_order_no = order_no;
+			cart_confirm_order = 'Y';
+
+			//cart_item_id = [];
+			//cart_num_items = 0;
+			//cart_qty = [];
+
+			saveCart();
+			return true;
+		}
+		else
+		{
+			$.notify({
+				title: '<strong>Error!</strong>',
+				message: 'Cart is empty. Please add at least one item.'
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				delay:3000
+			});
+			return false;
+		}
     }
     else
     {
@@ -628,10 +647,10 @@ function confirmOrder()
                 from: 'top',
                 align: 'center'
             },
-            delay:7000
+            delay:5000
         });
+		return false;
     }
-    
 }
 
 
@@ -917,8 +936,8 @@ $(document).ready(function()
 	
     $('body').on('click', 'a.confirm-order', function()
 	{
-        confirmOrder();
-        window.location.href = 'home.html';
+        if(confirmOrder())
+			window.location.href = 'home.html';
 		
 		return false;
 	});
