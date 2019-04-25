@@ -1,27 +1,6 @@
-http://brownscourt.com/about/
+# Tata Research Canteen
+_Competition entry for designing a college cafeteria website. Special mention for best-design._
 
-1. js cookie - sessions:
-https://github.com/AlexChittock/JQuery-Session-Plugin
+INSTRUO – the annual technical fest of my alma mater (IIEST Shibpur) – came back with its web development competition WebD again in 2015. The problem statement was more challenging than [the previous year](https://nilavra.in/projects/instruo2015). The competition was restricted to undergraduate students only, and I was now an alumnus. Still, the web developer in me could not hold back. Though the organizers could not award me a position due to the policies, they did mention that my entry had the **best design**.
 
-2. load local json
-http://stackoverflow.com/questions/27360326/how-do-i-load-my-local-json-file-just-using-javascript
-http://stackoverflow.com/questions/9066335/ajax-get-not-working-with-local-json-file
-
-
-North Indian
-Fast Food
-South Indian
-Packaged Food
-Beverages
-Chinese
-
-
-
-
-http://html.themographics.com/dhaba/restaurant/menu.html
-
-https://www.smashingmagazine.com/2014/02/create-client-side-shopping-cart/
-
-http://isotope.metafizzy.co/filtering.html
-
-pics: 250 x 250    250 x 156
+#### More details here: https://nilavra.in/projects/instruo2016
