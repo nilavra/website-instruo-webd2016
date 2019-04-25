@@ -6,7 +6,8 @@ INSTRUO – the annual technical fest of my alma mater (IIEST Shibpur) – came 
 ## More details here: https://nilavra.in/projects/instruo2016
 
 Youtube Video:
-[![ ](https://img.youtube.com/vi/CfuQ14XTtwg/0.jpg)](https://www.youtube.com/watch?v=CfuQ14XTtwg)
+
+[![YouTube Video](https://img.youtube.com/vi/CfuQ14XTtwg/0.jpg)](https://www.youtube.com/watch?v=CfuQ14XTtwg)
 
 
 
